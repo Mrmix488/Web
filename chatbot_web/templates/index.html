@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>เว็บแชทบอทง่าย ๆ</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <h1>คุยกับแชทบอท</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="พิมพ์ข้อความ..." />
+    <button onclick="sendMessage()">ส่ง</button>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            const chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<div><b>คุณ:</b> ${userText}</div>`;
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userText }),
+            });
+
+            const data = await response.json();
+            chatbox.innerHTML += `<div><b>บอท:</b> ${data.reply}</div>`;
+
+            input.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
